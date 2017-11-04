@@ -1,2 +1,2 @@
-# jukebox
-Simple Raspberry Pi Python jukebox-software.
+# Raspberry Pi Projects
+Collection of Dendril's Raspberry Pi Projects
