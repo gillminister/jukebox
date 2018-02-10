@@ -33,9 +33,17 @@ def handleDanger():
 # Notifiy that environment is unacceptable
 def notifiyDanger(humTemp):
     # authenthicate gmail user
-    gmail_user = 'dendril.notifier@gmail.com'
-    gmail_password = 'S#Y^yV(rAk)7R*bw'
+	gmail_user = 'dendril.notifier@gmail.com'
+	gmail_password = 'S#Y^yV(rAk)7R*bw'
 
+    try:
+        server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
+        server.ehlo()
+        server.login(gmail_user, gmail_password)
+    except:
+        print('ERR:\tcould not authenthicate gmail login')
+
+    # generate and send email
     sent_from = gmail_user
     to = ['jorn91@gmail.com', 'emiliehtakacs@gmail.com']
     subject = 'Fuktig gang!'
@@ -59,7 +67,7 @@ Subject: {2!s}
         dangerReported = True
         print('SUCC:\tDanger notification email sent!')
     except:
-        print("ERR:\tcould not authenthicate gmail login")
+        print("ERR:\tcould not send email")
 
 
 # Monitor loop
