@@ -33,8 +33,8 @@ def handleDanger():
 # Notifiy that environment is unacceptable
 def notifiyDanger(humTemp):
     # authenthicate gmail user
-	gmail_user = 'dendril.notifier@gmail.com'
-	gmail_password = 'S#Y^yV(rAk)7R*bw'
+    gmail_user = 'dendril.notifier@gmail.com'
+    gmail_password = 'lettPassord'  #'S#Y^yV(rAk)7R*bw'
 
     try:
         server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
