@@ -58,10 +58,15 @@ Subject: {2!s}
 """.format(sent_from, ", ".join(to), subject, body)
 
     try:
+		print(1)
         server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
+		print(2)
         server.ehlo()
+		print(3)
         server.login(gmail_user, gmail_password)
+		print(4)
         server.sendmail(sent_from, to, email_text)
+		print(5)
         server.close()
 
         dangerReported = True
