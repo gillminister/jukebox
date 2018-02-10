@@ -27,27 +27,10 @@ def checkTempHum(tempHum):
 def handleDanger():
     dangerReported = False
 
-# Monitor loop
-while True:
-    tempHum = getTempHum()
-    safeReport = checkTempHum(tempHum)
-
-    if not safeReport['sys'] and not dangerReported:
-        # Operating at non-optimal humidity / temperature ratio
-        # Report and check immediately
-        notifiyDanger(tempHum)
-
-    if dangerReported and safeReport['sys']:
-        # False alarm
-        print("yap")
-        dangerReported = False
-
-    print ('Temp: {0:0.1f} C  Humidity: {1:0.1f} %  [ {2!s} ]'.format(tempHum['temp'], tempHum['hum'], safeReport['read']))
-
-
 #######################################################
 ## ---------------- Email notifiers ---------------- ##
 #######################################################
+# Notifiy that environment is unacceptable
 def notifiyDanger(humTemp):
     # authenthicate gmail user
     gmail_user = 'dendril.notifier@gmail.com'
@@ -77,3 +60,21 @@ Subject: {2!s}
         print('SUCC:\tDanger notification email sent!')
     except:
         print("ERR:\tcould not authenthicate gmail login")
+
+
+# Monitor loop
+while True:
+    tempHum = getTempHum()
+    safeReport = checkTempHum(tempHum)
+
+    if not safeReport['sys'] and not dangerReported:
+        # Operating at non-optimal humidity / temperature ratio
+        # Report and check immediately
+        notifiyDanger(tempHum)
+
+    if dangerReported and safeReport['sys']:
+        # False alarm
+        print("yap")
+        dangerReported = False
+
+    print ('Temp: {0:0.1f} C  Humidity: {1:0.1f} %  [ {2!s} ]'.format(tempHum['temp'], tempHum['hum'], safeReport['read']))
