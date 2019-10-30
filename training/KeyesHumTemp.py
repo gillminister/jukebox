@@ -8,6 +8,8 @@ import smtplib
 
 # monitor check variables
 dangerReported = False
+tempThreshold = 19
+humThreshold = 30
 
 # gets dictionary of humidity / temperature readings
 # TODO: CHECK ACCURACY OF HUMIDITY SENSOR
@@ -17,7 +19,7 @@ def getTempHum():
 
 # checks if temperature / humidity are within safe parameters
 def checkTempHum(tempHum):
-    isSafe = tempHum['hum']<30 or tempHum['temp']<19
+    isSafe = tempHum['hum'] < humThreshold or tempHum['temp'] < tempThreshold
     if isSafe:
         return {'sys':True, 'read':'SAFE'}
     else:
@@ -31,7 +33,7 @@ def handleDanger():
 ## ---------------- Email notifiers ---------------- ##
 #######################################################
 # Notifiy that environment is unacceptable
-def notifiyDanger(humTemp):
+def notifyDanger(humTemp, isDanger):
     # authenthicate gmail user
     gmail_user = 'dendril.notifier@gmail.com'
     gmail_password = 'lettPassord'  #'S#Y^yV(rAk)7R*bw'
@@ -47,7 +49,11 @@ def notifiyDanger(humTemp):
     sent_from = gmail_user
     to = ['jorn91@gmail.com', 'emiliehtakacs@gmail.com']
     subject = 'Fuktig gang!'
-    body = 'Gangen hold no {0:0.1f}C {1:0.1f}% fukt. Sjekk måler og gjennomtrekk.'.format(humTemp['temp'], humTemp['hum'])
+	body = None
+	if isDanger:
+	    body = 'Gangen hold no {0:0.1f}C {1:0.1f}% fukt. Sjekk måler og gjennomtrekk.'.format(humTemp['temp'], humTemp['hum'])
+	else:
+		body = 'Gangen har returnert til normal.'
 
     email_text = """\
 From: {0!s}
@@ -73,9 +79,13 @@ Subject: TestTest
 Borat
 """)
         print(5)
+        #server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
+        #server.ehlo()
+        #server.login(gmail_user, gmail_password)
+        server.sendmail(sent_from, to, email_text)
         server.close()
 
-        dangerReported = True
+        dangerReported = isDanger
         print('SUCC:\tDanger notification email sent!')
     except:
         print("ERR:\tcould not send email")
@@ -89,11 +99,11 @@ while True:
     if not safeReport['sys'] and not dangerReported:
         # Operating at non-optimal humidity / temperature ratio
         # Report and check immediately
-        notifiyDanger(tempHum)
+        notifyDanger(tempHum, True)
 
     if dangerReported and safeReport['sys']:
         # False alarm
-        print("yap")
-        dangerReported = False
+		# Report return to normality
+		notifyDanger(tempHum, False)
 
     print ('Temp: {0:0.1f} C  Humidity: {1:0.1f} %  [ {2!s} ]'.format(tempHum['temp'], tempHum['hum'], safeReport['read']))
